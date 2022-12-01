@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -26,6 +27,7 @@ func main() {
 		}
 	}
 
+	// part one
 	heaviest := -1
 	for _, weight := range weights {
 		if weight > heaviest {
@@ -33,4 +35,12 @@ func main() {
 		}
 	}
 	fmt.Println(heaviest)
+
+	// part two
+	sort.Slice(weights, func(i, j int) bool {
+		return weights[i] < weights[j]
+	})
+
+	top3 := weights[len(weights)-1] + weights[len(weights)-2] + weights[len(weights)-3]
+	fmt.Println(top3)
 }
