@@ -80,7 +80,7 @@ func getSimulatedScore(opp rune, outcome rune) int {
 	return getRoundScore(you, opp)
 }
 
-func main() {
+func day02() {
 	content := readFile("input02")
 	lines := strings.Split(content, "\n")
 	score := 0

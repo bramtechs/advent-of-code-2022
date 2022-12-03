@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func day1() {
+func day01() {
 	content := readFile("input01")
 	lines := strings.Split(content, "\n")
 
