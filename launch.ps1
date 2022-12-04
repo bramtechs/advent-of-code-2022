@@ -11,10 +11,8 @@ if ($day -le 3) {
 }
 elseif ($day -eq 4) {
     New-Item -ItemType Directory -Force -Path .\build | Out-Null
-    javac ".\day0$day.java" -d build
-    Set-Location build
-    java "day0$day"
-    Set-Location ..
+    javac ".\day0$day.java" ".\utils.java" -d build
+    java -classpath .\build "day0$day"
 }
 else {
     Write-Error "Unknown day number"
