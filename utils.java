@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class utils {
+
+    public static <T> void check(T input, T shouldEqual) {
+        if (input != shouldEqual) {
+            throw new RuntimeException("Assertion failed: value was " + input);
+        }
+    }
+
     public static List<String> loadFile(String fileName) {
         FileReader reader;
         try {
