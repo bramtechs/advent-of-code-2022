@@ -35,6 +35,7 @@ public class utils {
                     builder.append(c);
                 }
             }
+            lines.add(builder.toString());
         } catch (IOException exc) {
             exc.printStackTrace();
             System.err.println("IO error occured while reading " + fileName);

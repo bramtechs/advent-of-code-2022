@@ -28,6 +28,10 @@ public class day04 {
             return false;
         }
 
+        public boolean overlapsPartner() {
+            return !(start[1] > end[0] || start[0] > end[1]);
+        }
+
         public String toString() {
             return start[0] + "-" + end[0] + "," + start[1] + "-" + end[1];
         }
@@ -40,12 +44,17 @@ public class day04 {
         Pair[] pairs = new Pair[lines.size()];
 
         int containing = 0;
+        int overlaps = 0;
         for (int i = 0; i < lines.size(); i++) {
             Pair pair = pairs[i] = new Pair(lines.get(i));
             if (pair.containsPartner()) {
                 containing++;
             }
+            if (pair.overlapsPartner()) {
+                overlaps++;
+            }
         }
         System.out.println(containing);
+        System.out.println(overlaps);
     }
 }
