@@ -51,7 +51,7 @@ func getPriority(char rune) int {
 	panic(fmt.Sprint("Can't get priority of character ", char))
 }
 
-func main() {
+func day03() {
 	content := readFile("input03")
 	sacks := strings.Split(content, "\n")
 	priority := 0
