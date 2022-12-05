@@ -33,8 +33,8 @@ public class day05 {
         List<String> layoutLines = getLayout(lines);
         // layoutLines.forEach((t) -> System.out.println(t));
 
-        Storage storage = buildStorage(layoutLines);
-        // System.out.println(storage.toString());
+        Storage firstStorage = buildStorage(layoutLines);
+        Storage secondStorage = buildStorage(layoutLines);
 
         // parse and move crates around
         int[][] commands = getCommands(lines);
@@ -43,13 +43,26 @@ public class day05 {
             int source = commands[i][1] - 1;
             int dest = commands[i][2] - 1;
 
+            char[] crateBuffer = new char[crates];
+
             for (int c = 0; c < crates; c++) {
-                char crate = storage.get(source).pop();
-                storage.get(dest).push(crate);
+                char crate = firstStorage.get(source).pop();
+                firstStorage.get(dest).push(crate);
+
+                char crate2 = secondStorage.get(source).pop();
+                crateBuffer[c] = crate2;
+            }
+
+            for (int c = crates - 1; c >= 0; c--) {
+                secondStorage.get(dest).push(crateBuffer[c]);
             }
         }
 
-        // result
+        printStorageTops(firstStorage);
+        printStorageTops(secondStorage);
+    }
+
+    private void printStorageTops(Storage storage) {
         StringBuilder b = new StringBuilder(storage.size());
         for (int i = 0; i < storage.size(); i++) {
             char top = storage.get(i).peek();
