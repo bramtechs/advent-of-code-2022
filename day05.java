@@ -38,6 +38,20 @@ public class day05 {
 
         HashMap<Point, Character> storage = buildStorage(getLayout(lines));
         System.out.println(storage.toString());
+
+        int[][] commands = getCommands(lines);
+    }
+
+    private int[][] getCommands(List<String> lines) {
+        // lines from layout already removed
+        int[][] cmds = new int[lines.size()][3];
+        for (int i = 0; i < lines.size(); i++) {
+            String[] segments = lines.get(i).split(" ");
+            cmds[i][0] = Integer.parseInt(segments[1].strip());
+            cmds[i][1] = Integer.parseInt(segments[3].strip());
+            cmds[i][2] = Integer.parseInt(segments[5].strip());
+        }
+        return cmds;
     }
 
     private HashMap<Point, Character> buildStorage(List<String> lines) {
@@ -66,6 +80,9 @@ public class day05 {
             System.out.println(line);
             storage.add(line);
         }
+        lines.removeAll(storage);
+        lines.remove(0);
+
         storage.remove(storage.size() - 1);
         return storage;
     }
