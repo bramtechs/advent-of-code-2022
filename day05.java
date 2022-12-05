@@ -1,32 +1,24 @@
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Stack;
 
 public class day05 {
 
-    static class Point {
-        int x, y;
+    static class Storage extends ArrayList<Stack<Character>> {
 
-        public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
+        public Storage(int cols) {
+            for (int i = 0; i < cols; i++) {
+                add(new Stack<>());
+            }
         }
-
-        public String toString() {
-            return "(" + this.x + "x" + this.y + ")";
-        }
-    }
-
-    static class Storage extends HashMap<Point, Character> {
 
         public String toString() {
             StringBuilder builder = new StringBuilder();
-            for (Entry<Point, Character> entry : this.entrySet()) {
-                builder.append(entry.getKey());
-                builder.append(" -> ");
-                builder.append(entry.getValue());
+            for (Stack<Character> stack : this) {
+                for (Character ch : stack) {
+                    builder.append(" -> ");
+                    builder.append(ch);
+                }
                 builder.append("\n");
             }
             return builder.toString();
@@ -36,10 +28,28 @@ public class day05 {
     public day05() {
         List<String> lines = utils.loadFile("inputs/input05_sample.txt");
 
-        HashMap<Point, Character> storage = buildStorage(getLayout(lines));
-        System.out.println(storage.toString());
+        Storage storage = buildStorage(getLayout(lines));
 
+        // parse and move crates around
         int[][] commands = getCommands(lines);
+        for (int i = 0; i < commands.length; i++) {
+            int crates = commands[i][0];
+            int source = commands[i][1] - 1;
+            int dest = commands[i][2] - 1;
+
+            for (int c = 0; c < crates; c++) {
+                char crate = storage.get(source).pop();
+                storage.get(dest).push(crate);
+            }
+        }
+
+        // result
+        StringBuilder b = new StringBuilder(storage.size());
+        for (int i = 0; i < storage.size(); i++) {
+            char top = storage.get(i).peek();
+            b.append(top);
+        }
+        System.out.println(b.toString());
     }
 
     private int[][] getCommands(List<String> lines) {
@@ -54,16 +64,15 @@ public class day05 {
         return cmds;
     }
 
-    private HashMap<Point, Character> buildStorage(List<String> lines) {
-        HashMap<Point, Character> storage = new HashMap<>();
-        for (int iY = 0; iY < lines.size(); iY++) {
-            String line = lines.get(iY);
+    private Storage buildStorage(List<String> lines) {
+        Storage storage = new Storage(lines.size());
+        for (int y = lines.size() - 1; y >= 0; y--) {
+            String line = lines.get(y);
             int x = 0;
             for (int i = 1; i < line.length(); i += 4) {
                 char c = line.charAt(i);
                 if (c != ' ') {
-                    int y = lines.size() - iY;
-                    storage.put(new Point(x, y), c);
+                    storage.get(x).push(c);
                 }
                 x++;
             }
@@ -77,7 +86,6 @@ public class day05 {
             if (line.isEmpty()) {
                 break;
             }
-            System.out.println(line);
             storage.add(line);
         }
         lines.removeAll(storage);
