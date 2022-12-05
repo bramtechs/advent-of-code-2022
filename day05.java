@@ -6,10 +6,13 @@ public class day05 {
 
     static class Storage extends ArrayList<Stack<Character>> {
 
-        public Storage(int cols) {
-            for (int i = 0; i < cols; i++) {
-                add(new Stack<>());
+        public Stack<Character> getOrAdd(int i) {
+            if (i < size()) {
+                return get(i);
             }
+            Stack<Character> stack = new Stack<>();
+            add(stack);
+            return stack;
         }
 
         public String toString() {
@@ -26,9 +29,12 @@ public class day05 {
     }
 
     public day05() {
-        List<String> lines = utils.loadFile("inputs/input05_sample.txt");
+        List<String> lines = utils.loadFile("inputs/input05.txt");
+        List<String> layoutLines = getLayout(lines);
+        // layoutLines.forEach((t) -> System.out.println(t));
 
-        Storage storage = buildStorage(getLayout(lines));
+        Storage storage = buildStorage(layoutLines);
+        // System.out.println(storage.toString());
 
         // parse and move crates around
         int[][] commands = getCommands(lines);
@@ -65,14 +71,14 @@ public class day05 {
     }
 
     private Storage buildStorage(List<String> lines) {
-        Storage storage = new Storage(lines.size());
+        Storage storage = new Storage();
         for (int y = lines.size() - 1; y >= 0; y--) {
             String line = lines.get(y);
             int x = 0;
             for (int i = 1; i < line.length(); i += 4) {
                 char c = line.charAt(i);
                 if (c != ' ') {
-                    storage.get(x).push(c);
+                    storage.getOrAdd(x).push(c);
                 }
                 x++;
             }
