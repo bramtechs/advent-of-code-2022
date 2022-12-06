@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class day06 {
     public static class Signal {
         private String content;
@@ -40,11 +42,19 @@ public class day06 {
             "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"
     };
 
-    public day06() {
+    void calculateExamples() {
         for (String example : examples) {
             Signal sign = new Signal(example);
             System.out.println(sign.getStartIndex());
         }
+    }
+
+    public day06() {
+        List<String> lines = utils.loadFile("inputs/input06.txt");
+        utils.check(lines.size(), 1);
+
+        Signal signal = new Signal(lines.get(0));
+        System.out.println(signal.getStartIndex());
     }
 
     public static void main(String[] args) {
