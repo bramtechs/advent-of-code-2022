@@ -23,9 +23,9 @@ public class day06 {
         }
 
         // go forwards and look back
-        int getStartIndex() {
-            for (int i = 4; i < content.length(); i++) {
-                String packet = content.substring(i - 4, i);
+        int getStartIndex(int size) {
+            for (int i = size; i < content.length(); i++) {
+                String packet = content.substring(i - size, i);
                 if (isSpecial(packet)) {
                     return i;
                 }
@@ -42,10 +42,10 @@ public class day06 {
             "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"
     };
 
-    void calculateExamples() {
+    void calculateExamples(int size) {
         for (String example : examples) {
             Signal sign = new Signal(example);
-            System.out.println(sign.getStartIndex());
+            System.out.println(sign.getStartIndex(size));
         }
     }
 
@@ -54,10 +54,13 @@ public class day06 {
         utils.check(lines.size(), 1);
 
         Signal signal = new Signal(lines.get(0));
-        System.out.println(signal.getStartIndex());
+        System.out.println(signal.getStartIndex(4));
+        System.out.println(signal.getStartIndex(14));
     }
 
     public static void main(String[] args) {
         new day06();
+        // new day06().calculateExamples(4);
+        // new day06().calculateExamples(14);
     }
 }
