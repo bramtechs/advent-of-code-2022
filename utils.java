@@ -12,6 +12,13 @@ public class utils {
         }
     }
 
+    public static int pos(int input) {
+        if (input <= 0) {
+            throw new RuntimeException("Assertion failed: value was " + input);
+        }
+        return input;
+    }
+
     public static List<String> loadFile(String fileName) {
         FileReader reader;
         try {
