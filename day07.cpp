@@ -24,7 +24,7 @@ struct File
 
     File *create_directory(std::string name)
     {
-        cout << "Creating folder " << name << endl;
+        // cout << "Creating folder " << name << endl;
         File folder = File(name);
         return add_child(folder);
     }
@@ -46,7 +46,7 @@ struct File
             File *file = children->get(i);
             if (file->name == name)
             {
-                cout << "Changed folder to " << name << endl;
+                // cout << "Changed folder to " << name << endl;
                 return file;
             }
         }
@@ -58,6 +58,7 @@ struct File
     File *add_child(File file)
     {
         file.parent = this;
+        // cout << "Adding file " << file.get_path() << endl;
         return children->push(file);
     }
 
@@ -99,7 +100,7 @@ struct File
         for (int i = 0; i < children->count; i++)
         {
             File *file = children->get(i);
-            s += file->size;
+            s += file->get_size();
         }
         return s;
     }
@@ -149,7 +150,7 @@ int run_line(int i, std::vector<string> &lines)
 
     // run command
     auto mem = str_get_members(line, true);
-    cout << mem.first << " : " << mem.second << endl;
+    // cout << mem.first << " : " << mem.second << endl;
 
     if (mem.first == "cd")
     {
@@ -189,7 +190,7 @@ uint get_size_sum()
     std::vector<File *> dirs;
     RootFile.collect_subdirs(&dirs);
 
-    uint total;
+    uint total = 0; // needs to be explicitely declared, learned this the hard way
     for (auto &dir : dirs)
     {
         uint size = dir->get_size();
@@ -211,10 +212,6 @@ int main()
     {
         i = run_line(i, lines);
     }
-
-    cout << "\n\n";
-
-    RootFile.print();
 
     cout << get_size_sum() << endl;
 

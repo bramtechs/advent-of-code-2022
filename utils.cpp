@@ -5,7 +5,7 @@
 #include <cassert>
 #include "mem_array.cpp"
 
-typedef unsigned int uint;
+typedef unsigned long uint;
 
 std::vector<std::string> read_lines(const char *path)
 {
