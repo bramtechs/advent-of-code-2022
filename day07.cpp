@@ -52,6 +52,7 @@ struct File
         }
         cout << "!! Didn't find folder " << name << endl;
         assert(false);
+        return nullptr;
     }
 
     File *add_child(File file)
@@ -67,6 +68,19 @@ struct File
             return parent->get_path() + "/" + name;
         }
         return name;
+    }
+
+    void collect_subdirs(std::vector<File *> *vector)
+    {
+        for (int i = 0; i < children->count; i++)
+        {
+            File *file = children->get(i);
+            if (file->is_dir())
+            {
+                vector->push_back(file);
+                file->collect_subdirs(vector);
+            }
+        }
     }
 
     void print()
@@ -147,9 +161,20 @@ int run_line(int i, std::vector<string> &lines)
         auto &out = lines.at(j);
         if (!str_is_command(out))
         {
-            // cout << "|->" << out << endl;
+            // cout << "->" << out << endl;
             auto mem = str_get_members(out, false);
-            cout << "|-> " << mem.first << " : " << mem.second << endl;
+            // cout << "|-> " << mem.first << " : " << mem.second << endl;
+
+            if (mem.first == "dir")
+            {
+                File *folder = CurrentFile->create_directory(mem.second);
+            }
+            else
+            { // gave file
+                uint size = atoi(mem.first.c_str());
+                File file = File(mem.second, size);
+                CurrentFile->add_child(file);
+            }
         }
         else
         {
@@ -157,6 +182,24 @@ int run_line(int i, std::vector<string> &lines)
         }
     }
     return lines.size(); // reached the end
+}
+
+uint get_size_sum()
+{
+    std::vector<File *> dirs;
+    RootFile.collect_subdirs(&dirs);
+
+    uint total;
+    for (auto &dir : dirs)
+    {
+        uint size = dir->get_size();
+        if (size <= 100000)
+        {
+            cout << dir->get_path() << " size: " << size << endl;
+            total += size;
+        }
+    }
+    return total;
 }
 
 int main()
@@ -172,6 +215,8 @@ int main()
     cout << "\n\n";
 
     RootFile.print();
+
+    cout << get_size_sum() << endl;
 
     return 0;
 }
