@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <cassert>
 
 #define print(X) std::cout << X << std::endl
 

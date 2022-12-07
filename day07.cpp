@@ -33,32 +33,42 @@ struct File
     }
 };
 
-struct Directory
+inline bool str_is_command(const std::string cmd)
 {
-    string name;
+    assert(cmd.length() > 0);
+    return cmd.at(0) == '$';
+}
 
-    vector<Directory> dirs;
-
-    uint get_size()
+int parse_command(int i, std::vector<string> &lines)
+{
+    auto &line = lines.at(i);
+    assert(str_is_command(line));
+    cout << line << endl;
+    for (int j = i + 1; j < lines.size(); j++)
     {
-        uint size = 0;
-        for (auto &file : files)
+        auto &out = lines.at(j);
+        if (!str_is_command(out))
         {
-            size += file.size;
+            cout << "|->" << out << endl;
         }
-        for (auto &dir : dirs)
+        else
         {
-            size += dir.get_size();
+            return j;
         }
-        return size;
     }
-};
+    return lines.size(); // reached the end
+}
 
 int main()
 {
-    Directory root = {"/"};
-    for (auto line : read_lines("inputs/input07_sample.txt"))
+    File root = File("/");
+    auto lines = read_lines("inputs/input07_sample.txt");
+
+    int i = 0;
+    while (i < lines.size())
     {
+        i = parse_command(i, lines);
     }
+
     return 0;
 }
