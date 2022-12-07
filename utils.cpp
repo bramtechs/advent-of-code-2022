@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 #include <cassert>
-
-#define print(X) std::cout << X << std::endl
+#include "mem_array.cpp"
 
 typedef unsigned int uint;
 
