@@ -204,16 +204,16 @@ uint get_size_sum()
 uint get_enough_space(uint needed)
 {
     uint smallest = (uint)pow(2, sizeof(uint) * 8);
-    for (int i = 0; i < RootFile.children->count; i++)
+
+    std::vector<File *> dirs;
+    RootFile.collect_subdirs(&dirs);
+
+    for (auto &dir : dirs)
     {
-        File *file = RootFile.children->get(i);
-        if (file->is_dir())
+        uint size = dir->get_size();
+        if (size >= needed && size < smallest)
         {
-            uint size = file->get_size();
-            if (size >= needed && size < smallest)
-            {
-                smallest = size;
-            }
+            smallest = size;
         }
     }
     assert(smallest >= needed);
@@ -222,7 +222,7 @@ uint get_enough_space(uint needed)
 
 int main()
 {
-    auto lines = read_lines("inputs/input07_sample.txt");
+    auto lines = read_lines("inputs/input07.txt");
 
     int i = 0;
     while (i < lines.size())
