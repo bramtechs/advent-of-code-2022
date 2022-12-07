@@ -196,7 +196,7 @@ uint get_size_sum()
         uint size = dir->get_size();
         if (size <= 100000)
         {
-            cout << dir->get_path() << " size: " << size << endl;
+            // cout << dir->get_path() << " size: " << size << endl;
             total += size;
         }
     }
@@ -205,7 +205,7 @@ uint get_size_sum()
 
 int main()
 {
-    auto lines = read_lines("inputs/input07_sample.txt");
+    auto lines = read_lines("inputs/input07.txt");
 
     int i = 0;
     while (i < lines.size())
