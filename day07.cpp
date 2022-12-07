@@ -1,7 +1,5 @@
 #include "utils.cpp"
 
-// why did I choose C++ for this day??
-
 using namespace std;
 
 typedef std::pair<std::string, std::string> Members;
@@ -203,9 +201,28 @@ uint get_size_sum()
     return total;
 }
 
+uint get_enough_space(uint needed)
+{
+    uint smallest = (uint)pow(2, sizeof(uint) * 8);
+    for (int i = 0; i < RootFile.children->count; i++)
+    {
+        File *file = RootFile.children->get(i);
+        if (file->is_dir())
+        {
+            uint size = file->get_size();
+            if (size >= needed && size < smallest)
+            {
+                smallest = size;
+            }
+        }
+    }
+    assert(smallest >= needed);
+    return smallest;
+}
+
 int main()
 {
-    auto lines = read_lines("inputs/input07.txt");
+    auto lines = read_lines("inputs/input07_sample.txt");
 
     int i = 0;
     while (i < lines.size())
@@ -213,7 +230,16 @@ int main()
         i = run_line(i, lines);
     }
 
+    // part one
     cout << get_size_sum() << endl;
+
+    // part two
+    uint maxSize = 70000000;
+    uint targetUnusedSpace = 30000000;
+
+    uint unusedSpaceLeft = maxSize - RootFile.get_size();
+    uint spaceNeeded = targetUnusedSpace - unusedSpaceLeft;
+    cout << get_enough_space(spaceNeeded) << endl;
 
     return 0;
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <cassert>
+#include <cmath>
 #include "mem_array.cpp"
 
 typedef unsigned long uint;
