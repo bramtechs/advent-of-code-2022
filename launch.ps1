@@ -5,14 +5,19 @@ else {
     $day = Read-Host "Enter number of day to run!"
 }
 
+New-Item -ItemType Directory -Force -Path .\build | Out-Null
+
 if ($day -le 3) {
     $gofiles = Get-ChildItem -Filter *.go
     go run $gofiles $day
 }
 elseif ($day -ge 4 -and $day -le 6) {
-    New-Item -ItemType Directory -Force -Path .\build | Out-Null
     javac ".\day0$day.java" ".\utils.java" -d build
     java -classpath .\build "day0$day"
+}
+elseif ($day -ge 7 -and $day -le 7) {
+    g++ "./day0$day.cpp" -o "./build/day0$day.exe"
+    & ".\build\day0$day.exe"
 }
 else {
     Write-Error "Unknown day number"
