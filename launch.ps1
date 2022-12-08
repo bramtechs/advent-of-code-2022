@@ -15,7 +15,7 @@ elseif ($day -ge 4 -and $day -le 6) {
     javac ".\day0$day.java" ".\utils.java" -d build
     java -classpath .\build "day0$day"
 }
-elseif ($day -ge 7 -and $day -le 7) {
+elseif ($day -ge 7 -and $day -le 8) {
     g++ "./day0$day.cpp" -o "./build/day0$day.exe"
     & ".\build\day0$day.exe"
 }
