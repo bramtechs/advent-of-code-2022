@@ -8,7 +8,7 @@ std::pair<int, int> OFFSETS[4] = {
     {1, 0},
     {0, 1},
     {-1, 0},
-    {0, 1},
+    {0, -1},
 };
 
 typedef uint8_t byte;
@@ -109,7 +109,7 @@ Map *parse_map(std::vector<std::string> &lines)
 
 int main()
 {
-    auto lines = read_lines("inputs/input08_sample.txt");
+    auto lines = read_lines("inputs/input08.txt");
     Map *map = parse_map(lines);
 
     int visible = 0;
