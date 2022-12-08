@@ -18,7 +18,10 @@ std::vector<std::string> read_lines(const char *path)
         std::string line;
         while (std::getline(stream, line))
         {
-            lines.push_back(line);
+            if (!line.empty())
+            {
+                lines.push_back(line);
+            }
         }
     }
     else

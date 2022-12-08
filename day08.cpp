@@ -109,7 +109,7 @@ Map *parse_map(std::vector<std::string> &lines)
 
 int main()
 {
-    auto lines = read_lines("inputs/input08.txt");
+    auto lines = read_lines("inputs/input08_sample.txt");
     Map *map = parse_map(lines);
 
     int visible = 0;
@@ -124,7 +124,7 @@ int main()
             if (map->is_visible(x, y))
                 visible++;
         }
-        cout << endl;
+        // cout << endl;
     }
 
     cout << visible << endl;
