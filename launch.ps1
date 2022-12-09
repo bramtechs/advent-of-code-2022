@@ -16,8 +16,8 @@ elseif ($day -ge 4 -and $day -le 6) {
     javac ".\day0$day.java" ".\utils.java" -d build
     Measure-Command { java -classpath .\build "day0$day" | Out-Default }
 }
-elseif ($day -ge 7 -and $day -le 8) {
-    g++ "./day0$day.cpp" -o "./build/day0$day.exe"
+elseif ($day -ge 7 -and $day -le 9) {
+    cl "./day0$day.cpp" -o "./build/day0$day.exe"
     Measure-Command { & ".\build\day0$day.exe" | Out-Default }
 }
 else {
