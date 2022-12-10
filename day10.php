@@ -1,16 +1,26 @@
 <?php
 include "utils.php";
 
+$screen_width = 40;
+$screen_height = 6;
+
 $cycle = 0;
 $reg_x = 1;
 $total_strength = 0;
 
 $lines = readinput("inputs/input10.txt");
+$crt = array();
 
-function add_cycle(){
-    global $cycle;
+function is_sprite(int $x): bool{
     global $reg_x;
-    global $total_strength;
+    return $x >= $reg_x-1 && $x <= $reg_x+1;
+}
+
+function add_cycle(): void{
+    global $cycle, $reg_x, $crt, $total_strength;
+    global $screen_width;
+
+    $crt[] = is_sprite($cycle % $screen_width);
 
     $cycle ++;
 
@@ -34,6 +44,20 @@ foreach ($lines as $i => $line) {
     }
 }
 
-echo $total_strength;
+// part one
+echo $total_strength . PHP_EOL;
+
+// part two: print lcd
+for ($y = 0; $y < $screen_height; $y++){
+    for ($x = 0; $x < $screen_width ; $x++){
+        $i = $y * $screen_width + $x;
+        if ($crt[$i]){
+            echo '#';
+        }else{
+            echo ' ';
+        }
+    }
+    echo PHP_EOL;
+}
 
 ?>
