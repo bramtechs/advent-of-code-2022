@@ -5,7 +5,7 @@ $cycle = 0;
 $reg_x = 1;
 $total_strength = 0;
 
-$lines = readinput("inputs/input10_sample.txt");
+$lines = readinput("inputs/input10.txt");
 
 function add_cycle(){
     global $cycle;
