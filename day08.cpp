@@ -73,6 +73,39 @@ struct Map
         return false;
     }
 
+    int calc_view_distance_from(int x, int y, byte dir)
+    {
+        assert(dir >= 0 && dir < 4);
+
+        int distance = 0;
+        byte treeHeight = at(x, y);
+        while (x > 0 && y > 0 && x < width - 1 && y < height - 1)
+        {
+            x += OFFSETS[dir].first;
+            y += OFFSETS[dir].second;
+
+            if (treeHeight <= at(x, y))
+            {
+                break;
+            }
+
+            distance++;
+        }
+        return distance;
+    }
+
+    int calc_scenic_score(int x, int y)
+    {
+        int score = 1;
+        for (int i = 0; i < 4; i++)
+        {
+            int dir_score = calc_view_distance_from(x,y,i);
+            cout << dir_score << endl;
+            score *= dir_score; 
+        }
+        return score;
+    }
+
     void print(int x, int y)
     {
         byte val = at(x, y);
@@ -109,10 +142,11 @@ Map *parse_map(std::vector<std::string> &lines)
 
 int main()
 {
-    auto lines = read_lines("inputs/input08.txt");
+    auto lines = read_lines("inputs/input08_sample.txt");
     Map *map = parse_map(lines);
 
     int visible = 0;
+    int maxScore = 0;
 
     for (int y = 0; y < map->height; y++)
     {
@@ -121,6 +155,11 @@ int main()
             byte value = map->at(x, y);
             // map->print(x, y);
 
+            int score = map->calc_scenic_score(x,y);
+            if (score > maxScore) {
+                maxScore = score;
+            }
+
             if (map->is_visible(x, y))
                 visible++;
         }
@@ -128,6 +167,7 @@ int main()
     }
 
     cout << visible << endl;
+    cout << maxScore << endl;
 
     delete map;
 
