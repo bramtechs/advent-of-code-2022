@@ -10,6 +10,7 @@ class Monkey {
     public int $test_mod;
     public int $target_true;
     public int $target_false;
+    public int $inspections;
 
     function calc_worried(int $worry): int{
         $formula  = str_replace("old",$worry,$this->worried_formula);
@@ -23,6 +24,7 @@ class Monkey {
         while (count($this->items) > 0){
             $next_item = array_shift($this->items);
             $next_item = $this->calc_worried($next_item);
+            $this->inspections++;
 
             // monkey get's bored
             $next_item = floor($next_item / 3);
@@ -55,13 +57,14 @@ class Monkey {
     }
 }
 
-$lines = readinput("inputs/input11_sample.txt");
+$lines = readinput("inputs/input11.txt");
 $i = 0;
 
 while ($i < count($lines)){
     $i++;
 
     $monkey = new Monkey();
+    $monkey->inspections = 0;
     
     // starting items
     $items = explode(":",$lines[$i])[1];
@@ -104,7 +107,7 @@ while ($i < count($lines)){
     $i++;
 }
 
-var_dump($monkeys);
+// var_dump($monkeys);
 
 function print_round(int $round){
     echo "\n";
@@ -118,13 +121,22 @@ function print_round(int $round){
     }
 }
 
-print_round(0);
-for ($i = 1; $i <= 7; $i++){
+// print_round(0);
+for ($i = 1; $i <= 20; $i++){
     foreach ($monkeys as $monkey){
         $monkey->take_turn();
     }
     // print inventories
-    print_round($i);
+    // print_round($i);
 }
 
+// sum of two most active monkeys
+$inspections = array();
+foreach ($monkeys as $monkey){
+    $inspections[] = $monkey->inspections;
+}
+rsort($inspections);
+
+$monkey_business = $inspections[0] * $inspections[1];
+echo "$monkey_business\n";
 ?>
