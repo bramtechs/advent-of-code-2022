@@ -2,23 +2,61 @@
 include "utils.php";
 error_reporting(E_ERROR | E_PARSE);
 
-$worried = 0;
+$monkeys = array();
 
 class Monkey {
     public $items = array();
     public string $worried_formula;
-    public string $test;
+    public int $test_mod;
     public int $target_true;
     public int $target_false;
 
-    function throw(){
+    function calc_worried(int $worry): int{
+        $formula  = str_replace("old",$worry,$this->worried_formula);
+        $new_worry = eval('return ' . $formula . ';'); // dangerous
+        return $new_worry;
+    }
 
+    function take_turn(){
+
+        // calculate worry
+        while (count($this->items) > 0){
+            $next_item = array_shift($this->items);
+            $next_item = $this->calc_worried($next_item);
+
+            // monkey get's bored
+            $next_item = floor($next_item / 3);
+
+            // do test
+            if ($next_item % $this->test_mod == 0){
+                $this->throw_towards($next_item, $this->target_true);
+            }else{
+                $this->throw_towards($next_item, $this->target_false);
+            }
+        }
+    }
+
+    function catch_item($item){
+        $this->items[] = $item;
+    }
+
+    function throw_towards($item, $monkey_id){
+        global $monkeys;
+        // echo "Throwing item " . $item . " towards " . $monkey_id . "\n";
+        $monkeys[$monkey_id]->catch_item($item);
+    }
+
+    function print_inventory($id){
+        echo "Monkey $id: ";
+        foreach ($this->items as $item){
+            echo "$item, ";
+        }
+        echo "\n";
     }
 }
 
 $lines = readinput("inputs/input11_sample.txt");
 $i = 0;
-$monkeys = array();
 
 while ($i < count($lines)){
     $i++;
@@ -36,31 +74,57 @@ while ($i < count($lines)){
     $i++;
 
     // worried formula (operation)
-    $formula = trim(explode(": ",$lines[$i])[1]);
+    $formula = explode(": ",$lines[$i])[1];
+    $formula = trim(explode(" = ",$lines[$i])[1]);
     $monkey->worried_formula = $formula;
 
     $i++;
 
     // test
-    $test = trim(explode(": ",$lines[$i])[1]);
-    $monkey->test = $test;
+    $test = trim(explode("by ",$lines[$i])[1]);
+    $monkey->test_mod = intval($test);
 
     $i++;
 
-    $false = intval($lines[$i][strlen($lines[$i])-1]);
-    $monkey->target_false = $false;
-
-    $i++;
-
-    $true = intval($lines[$i][strlen($lines[$i])-1]);
+    $true = trim($lines[$i]);
+    $true = $true[strlen($true)-1];
+    $true = intval($true);
     $monkey->target_true = $true;
+
+    $i++;
+
+    $false = trim($lines[$i]);
+    $false = $false[strlen($false)-1];
+    $false = intval($false);
+    $monkey->target_false = $false;
     
     $monkeys[] = $monkey;
 
     $i++;
     $i++;
-
 }
+
 var_dump($monkeys);
+
+function print_round(int $round){
+    echo "\n";
+    echo "Round: $round \n";
+    echo "========================\n";
+    global $monkeys;
+    $id = 0;
+    foreach ($monkeys as $monkey){
+        $monkey->print_inventory($id);
+        $id++;
+    }
+}
+
+print_round(0);
+for ($i = 1; $i <= 7; $i++){
+    foreach ($monkeys as $monkey){
+        $monkey->take_turn();
+    }
+    // print inventories
+    print_round($i);
+}
 
 ?>
