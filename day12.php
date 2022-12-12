@@ -2,7 +2,7 @@
 
 include "utils.php";
 
-$input = readinput_single("inputs/input12_sample.txt");
+$input = readinput_single("inputs/input12.txt");
 
 $map = array();
 $visits = array();
@@ -39,12 +39,14 @@ $height = floor(count($map) / $width);
 // var_dump($map);
 // echo "$width x $height\n";
 
-# babbies first attempt at depth first search
-
 function is_accessible(int $origin, int $dest): bool
 {
     global $map, $visits, $width;
     assert($origin >= 0 && $origin < count($map), "Origin out of bounds!");
+
+    if ($dest < 0 || $dest >= count($map)) {
+        return false;
+    }
 
     // check if adjacent 
     if (abs(($origin % $width) - ($dest % $width)) <= 1) {
@@ -60,35 +62,6 @@ function is_accessible(int $origin, int $dest): bool
     return false;
 }
 
-function visit_neighbor(int $i): int | null
-{
-    global $visits, $dirs, $width, $height;
-
-    if (is_accessible($i, $i + 1)) { // east
-        $visits[$i+1] = true;
-        echo "east \n";
-        return $i+1;
-    }
-    if (is_accessible($i, $i - 1)) { // west
-        $visits[$i-1] = true;
-        echo "west \n";
-        return $i-1;
-    }
-    if (is_accessible($i, $i - $width)) { // north
-        $visits[$i-$width] = true;
-        echo "north \n";
-        return $i-$width;
-    }
-    if (is_accessible($i, $i + $width)) { // south
-        $visits[$i+$width] = true;
-        echo "south \n";
-        return $i+$width;
-    }
-
-    // no neighbors found that are in reach and aren't visited
-    return null;
-}
-
 function is_peak(int $i): bool
 {
     global $map;
@@ -96,27 +69,64 @@ function is_peak(int $i): bool
     return $map[$i] == $peak;
 }
 
-$stack = array();
-array_push($stack, $cur_pos);
+$paths = array();
+$valid_paths = array();
 
-$steps = 0;
-while (count($stack) > 0) {
-    $neigh = visit_neighbor($cur_pos);
-    if ($neigh != null) {
-        array_push($stack, $neigh);
-        $cur_pos = $neigh;
+function try_take_route(array $path, int $origin, int $offset, bool $ghost): bool
+{
+    global $paths;
 
-        if (is_peak($cur_pos)) {
-            echo "found peak!\n";
-            break;
+
+    if (is_accessible($origin, $origin + $offset)) {
+        if ($ghost) {
+            $new_path = $path; // copy
+            $paths[] = $new_path;
+            walk($new_path, $origin + $offset);
+        } else {
+            walk($path, $origin + $offset);
+            return true;
         }
-    } else {
-        // backtrack through the stack
-        $cur_pos = array_pop($stack);
     }
-    //var_dump($stack);
-    $steps++;
-    assert($steps < 200);
+    return false;
 }
 
-echo $steps . "\n";
+function walk(array $path, int $pos)
+{
+    global $map, $paths, $valid_paths, $visits, $width;
+
+    // mark i've been here
+    $visits[$pos] = true;
+    $path[] = $pos;
+
+    // check if peak
+    if (is_peak($pos)) {
+        // i'm done, no more movement needed!
+        $steps = count($path);
+        $valid_paths[] = $path;
+        echo "path reached peak $pos with $steps steps!\n";
+        return;
+    }
+
+    // take first available neighbor fork all the other available neighbors
+
+    $ghost = try_take_route($path, $pos, 1, false); // west
+    $ghost = try_take_route($path, $pos, -1, $ghost); // east
+    $ghost = try_take_route($path, $pos, -$width, $ghost); // north
+    $ghost = try_take_route($path, $pos, $width, $ghost); // south
+
+    // if no available neighbors, don't do anything 
+}
+
+array_push($paths, array());
+walk($paths[0], $cur_pos);
+
+// get valid path with least amount of steps
+
+$least_steps = PHP_INT_MAX;
+foreach ($valid_paths as $path) {
+    $count = count($path);
+    if ($count < $least_steps) {
+        $least_steps = $count;
+    }
+}
+echo "$least_steps\n";
