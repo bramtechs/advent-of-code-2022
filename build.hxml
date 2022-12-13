@@ -1,0 +1,3 @@
+--class-path .
+--main Day13
+--cpp build/cpp
