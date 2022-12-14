@@ -26,9 +26,7 @@ elseif ($day -ge 10 -and $day -le 12) {
     Measure-Command { & php day$day.php | Out-Default }
 }
 elseif ($day -ge 13 -and $day -le 16) {
-    Remove-Item -Force ".\build\cpp\Day$day.exe" | Out-Null
-    haxe .\build.hxml
-    Measure-Command { & ".\build\cpp\Day$day.exe" | Out-Default }
+    Measure-Command { & python3 "day$day.py" | Out-Default }
 }
 else {
     Write-Error "Unknown day number"
