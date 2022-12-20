@@ -25,8 +25,10 @@ elseif ($day -ge 7 -and $day -le 9) {
 elseif ($day -ge 10 -and $day -le 12) {
     Measure-Command { & php day$day.php | Out-Default }
 }
-elseif ($day -ge 13 -and $day -le 16) {
-    Measure-Command { & python3 "day$day.py" | Out-Default }
+elseif ($day -ge 13 -and $day -le 14) {
+    dmd "day$day.d" -of="build/day$day.exe"
+    #Measure-Command { & "build/day$day.exe"  | Out-Default }
+    & "build/day$day.exe"  | Out-Default
 }
 else {
     Write-Error "Unknown day number"
