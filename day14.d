@@ -29,9 +29,11 @@ enum Tile
 {
     ROCK,
     SOURCE,
+    SAND,
 }
 
 alias Map = Tile[Point];
+static Map map;
 
 Rectangle getMapBounds(Map map)
 {
@@ -60,7 +62,29 @@ Rectangle getMapBounds(Map map)
     return Rectangle(smallest, biggest);
 }
 
-void printMap(Map map, Rectangle bounds)
+bool is_in_bounds(Point p, Rectangle b){
+    if (p.x < b.x1) return false;
+    if (p.x > b.x2) return false;
+    if (p.y < b.y1) return false;
+    if (p.y > b.y2) return false;
+    return true;
+}
+
+bool is_solid(Point point){
+    if (auto type = point in map){
+        if (*type == Tile.ROCK || *type == Tile.SAND){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool is_solid(int x, int y){
+    Point p = { x, y };
+    return is_solid(p);
+}
+
+void printMap(Rectangle bounds)
 {
     for (int y = bounds.y1; y <= bounds.y2; y++)
     {
@@ -78,6 +102,9 @@ void printMap(Map map, Rectangle bounds)
                     case Tile.SOURCE:
                         letter = '+';
                         break;
+                    case Tile.SAND:
+                        letter = 'O';
+                        break;
                     default:
                         assert(0);
                 }
@@ -90,10 +117,7 @@ void printMap(Map map, Rectangle bounds)
 
 void main()
 {
-    string content = cast(string) read("inputs/input14_sample.txt");
-
-    // define the map
-    Map map;
+    string content = cast(string) read("inputs/input14.txt");
 
     // source
     Point source = {500, 0};
@@ -151,8 +175,34 @@ void main()
         }
     }
 
-    // print the map
     Rectangle bounds = getMapBounds(map);
-    writeln(bounds);
-    printMap(map, bounds);
+
+    int units = 0;
+    Point sand = source;
+    while (true){
+        sand = source;
+        while (is_in_bounds(sand,bounds)){
+            if (is_solid(sand.x,sand.y+1)){
+                if (!is_solid(sand.x-1,sand.y+1)){
+                    sand.x--;
+                }else if (!is_solid(sand.x+1,sand.y+1)){
+                    sand.x++;
+                }else{
+                    break;
+                }
+            }else{
+                sand.y++;
+            }
+        }
+        if (is_in_bounds(sand,bounds)){
+            map[sand] = Tile.SAND;
+            units++;
+        }else{
+            break;
+        }
+    }
+
+    // print the map
+    printMap(bounds);
+    writeln(units);
 }
