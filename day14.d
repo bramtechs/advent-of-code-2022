@@ -62,9 +62,9 @@ Rectangle getMapBounds(Map map)
 
 void printMap(Map map, Rectangle bounds)
 {
-    for (int y = bounds.y1; y < bounds.y2; y++)
+    for (int y = bounds.y1; y <= bounds.y2; y++)
     {
-        for (int x = bounds.x1; x < bounds.x2; x++)
+        for (int x = bounds.x1; x <= bounds.x2; x++)
         {
             char letter = '.';
             Point coord = {x, y};
@@ -72,14 +72,14 @@ void printMap(Map map, Rectangle bounds)
             {
                 switch (*type)
                 {
-                case Tile.ROCK:
-                    letter = '#';
-                    break;
-                case Tile.SOURCE:
-                    letter = '+';
-                    break;
-                default:
-                    assert(0);
+                    case Tile.ROCK:
+                        letter = '#';
+                        break;
+                    case Tile.SOURCE:
+                        letter = '+';
+                        break;
+                    default:
+                        assert(0);
                 }
             }
             write(letter);
@@ -99,16 +99,55 @@ void main()
     Point source = {500, 0};
     map[source] = Tile.SOURCE;
 
-    // parse the map
+    // get rock lines map
     foreach (line; splitLines(content))
     {
+        Point[] segments;
         foreach (coord; split(line, " -> "))
         {
             string[] coords = split(coord, ',');
             assert(coords.length == 2);
-            Point p = {to!int(coords[0]),
-            to!int(coords[1])};
-            map[p] = Tile.ROCK;
+            Point p = {
+                to!int(coords[0]),
+                to!int(coords[1])
+            };
+
+            segments ~= p;
+        }
+
+        for(int i = 1; i < segments.length; i++){
+            Point p1 = segments[i-1];
+            Point p2 = segments[i];
+    
+
+            if (p1.x == p2.x){ // vertical
+                int x = p1.x;
+                if (p2.y < p1.y){
+                    int c = p1.y;
+                    p1.y = p2.y;
+                    p2.y = c;
+                }
+                assert(p1.y < p2.y);
+                for (int y = p1.y; y <= p2.y; ++y){
+                    Point p = { x, y };
+                    map[p] = Tile.ROCK;
+                }
+            }
+            else if (p1.y == p2.y){ // horizontal
+                int y = p1.y;
+                if (p2.x < p1.x){
+                    int c = p1.x;
+                    p1.x = p2.x;
+                    p2.x = c;
+                }
+                assert(p1.x < p2.x);
+                for (int x = p1.x; x <= p2.x; ++x){
+                    Point p = { x, y };
+                    map[p] = Tile.ROCK;
+                }
+            }else{
+                assert(false);
+            }
         }
     }
 
