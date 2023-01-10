@@ -203,6 +203,5 @@ void main()
     }
 
     // print the map
-    printMap(bounds);
     writeln(units);
 }
