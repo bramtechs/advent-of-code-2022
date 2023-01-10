@@ -4,15 +4,19 @@ import std.file;
 import std.string;
 import std.conv;
 
+struct Bounds {
+    int x1;
+    int y1;
+
+    int x2;
+    int y2;
+}
+
 struct Sensor {
     int x;
     int y;
 
     int range;
-}
-
-int checkRow(int y){
-    return -1;
 }
 
 int distance(int x1, int y1, int x2, int y2){
@@ -25,7 +29,23 @@ unittest {
     assert(distance(2,2,8,8) == 12);
 }
 
+int checkRow(int y, Bounds bounds, ref Sensor[] sensors){
+    int invalid = 0;
+    for (int x = bounds.x1; x < bounds.x2; x++){
+        foreach (sensor; sensors){
+            int dis = distance(x,y,sensor.x,sensor.y);
+            if (dis < sensor.range){
+                // can't be beacon
+                invalid++;
+            }
+        }
+    }
+    return invalid;
+}
+
 // map out all sensor locations
+
+// calculate map bounds
 
 // calculate distances between sensor and closest beacon
 
@@ -33,9 +53,9 @@ unittest {
 
 
 void main(){
-    writeln("hello world!");
-
     string content = cast(string) read("inputs/input15_sample.txt");
+
+    Sensor[] sensors;
 
     foreach (line; splitLines(content))
     {
@@ -52,6 +72,11 @@ void main(){
         Sensor sensor = {
             x, y, range
         };
-        writeln(sensor);
+        sensors ~= sensor;
     }
+
+    Bounds b = {
+        -4,26, 9, 11
+    };
+    writeln(checkRow(10,b,sensors));
 }
